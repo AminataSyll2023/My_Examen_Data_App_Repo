@@ -6,6 +6,7 @@ import base64
 import re
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 
 # Configuration de la page
 st.set_page_config(
