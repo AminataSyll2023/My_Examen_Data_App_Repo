@@ -78,8 +78,8 @@ st.markdown("""
 st.markdown('<h1 class="main-header">MY DATA SCRAPER APP</h1>', unsafe_allow_html=True)
 st.markdown('<p class="description">Cette app permet de scraper des données depuis des sites web sur plusieurs pages. Vous pouvez aussi télécharger des fichiers CSV préexistants.</p>', unsafe_allow_html=True)
 
-# Sidebar - User Input Features
-st.sidebar.header("🔧 User Input Features")
+# Sidebar 
+st.sidebar.header("Faites vos choix")
 
 # Pages indexes
 st.sidebar.subheader("Pages à scraper")
