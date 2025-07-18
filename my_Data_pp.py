@@ -119,7 +119,6 @@ elif scraping_method == "Download scraped data":
         download_clicked = True
 
 
-
 # Fonctions de scraping
 def scrape_villas(pages):
     df = pd.DataFrame()
@@ -135,7 +134,6 @@ def scrape_villas(pages):
                 desc = c.find('p', class_='ad__card-description').text.strip()
                 type_annonce = desc.split()[0]
 
-                # Extraire un nombre uniquement depuis la description
                 match = re.search(r'\b(\d+)\b', desc)
                 nombre_pieces = match.group(1) if match else ''
 
@@ -169,7 +167,6 @@ def scrape_terrains(pages):
             try:
                 desc = c.find('p', class_='ad__card-description').text.strip()
 
-                # Extraire uniquement les chiffres avec . ou , (ex: 400, 1.5 etc.)
                 superficie_match = re.search(r"[\d.,]+", desc)
                 superficie = superficie_match.group().replace(",", "") if superficie_match else None
 
@@ -200,7 +197,6 @@ def scrape_appartements(pages):
         for c in containers:
             try:
                 desc = c.find('p', 'ad__card-description').text.strip()
-                # Extraire un nombre uniquement depuis la description
                 match = re.search(r'\b(\d+)\b', desc)
                 nombre_pieces = match.group(1) if match else ''
                 prix = c.find('p', class_='ad__card-price').text.replace('CFA', '').strip()
@@ -218,11 +214,12 @@ def scrape_appartements(pages):
         df = pd.concat([df, pd.DataFrame(data)], ignore_index=True)
     return df
 
-# Centralisation des chemins CSV
-file_paths = {
-    "Villas": r"C:\Users\admin\Desktop\DIT\Data callection\EXAM\CoinAfrique_villas_sitemap.csv",
-    "Terrains": r"C:\Users\admin\Desktop\DIT\Data callection\EXAM\CoinAfrique_terrains_sitemap.csv",
-    "Appartements": r"C:\Users\admin\Desktop\DIT\Data callection\EXAM\CoinAfrique_appartements_sitemap.csv",
+
+# Utilisation de chemins relatifs dans le dossier 'data'
+file_list = {
+    "Villas": 'data/CoinAfrique_villas_sitemap.csv',
+    "Terrains": 'data/CoinAfrique_terrains_sitemap.csv',
+    "Appartements": 'data/CoinAfrique_appartements_sitemap.csv',
 }
 
 # Fonction pour générer un lien de téléchargement CSV
@@ -249,10 +246,11 @@ if scrape_clicked:
         st.dataframe(df_scraped, use_container_width=True)
         st.session_state['scraped_data'] = df_scraped
 
-        # Sauvegarde automatique du fichier après scraping
-        save_path = file_paths.get(category_option)
+        # Sauvegarde automatique du fichier après scraping dans 'data/'
+        save_path = file_list.get(category_option)
         if save_path:
             try:
+                os.makedirs(os.path.dirname(save_path), exist_ok=True)  # Crée dossier data si absent
                 df_scraped.to_csv(save_path, index=False)
                 st.info(f"Données sauvegardées dans : {save_path}")
             except Exception as e:
@@ -260,7 +258,7 @@ if scrape_clicked:
 
 # Gestion du téléchargement
 if download_clicked:
-    file_path = file_paths.get(category_option)
+    file_path = file_list.get(category_option)
 
     if file_path and os.path.exists(file_path):
         try:
@@ -278,7 +276,7 @@ if download_clicked:
 if scraping_method == "Dashboard":
     st.subheader(" Dashboard")
 
-    file_path = file_paths.get(category_option)
+    file_path = file_list.get(category_option)
 
     if file_path and os.path.exists(file_path):
         try:
